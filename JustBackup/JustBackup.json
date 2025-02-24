@@ -1,8 +1,8 @@
 ﻿{
-  "Author": "NightmareXIV",
-  "Name": "JustBackup",
-  "InternalName": "JustBackup",
-  "Punchline": "Automatically backup your game and plugin configuration.",
-  "Description": "This plugin automatically backups your game and plugin configurations upon game/plugin starting.",
+  "Author": "NightmareXIV, Small_Miao(汉化)",
+  "Name": "JustBackupCN",
+  "InternalName": "JustBackupCN",
+  "Punchline": "自动备份你的游戏和插件配置.",
+  "Description": "该插件会在游戏/插件启动时自动备份你的游戏和插件配置.",
   "RepoUrl": "https://github.com/NightmareXIV/JustBackup"
 }

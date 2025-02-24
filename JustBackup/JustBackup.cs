@@ -19,7 +19,7 @@ namespace JustBackup;
 
 public unsafe class JustBackup : IDalamudPlugin
 {
-    public string Name => "JustBackup";
+    public string Name => "JustBackupCN";
     const string UrlFileName = "How to restore a backup.url";
     internal Config config;
     WindowSystem windowSystem;

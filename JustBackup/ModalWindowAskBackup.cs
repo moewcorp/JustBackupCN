@@ -17,8 +17,8 @@ internal class ModalWindowAskBackup : Window
 
     public override void Draw()
     {
-        ImGuiEx.Text($"Another backup is already in progress. \nAttempting to create new backup while old \n  is not yet finished may result both backups not being done properly.");
-        if (ImGui.Button($"Force stop old backup and create new backup"))
+        ImGuiEx.Text($"另一个备份正在进行中。\n在上一个备份尚未完成时尝试创建新备份，可能会导致两个备份都无法正确完成。");
+        if (ImGui.Button($"强制停止旧备份并创建新备份"))
         {
             try
             {
@@ -40,11 +40,11 @@ internal class ModalWindowAskBackup : Window
                 Notify.Error("Could not terminate old backup");
             }
         }
-        if(ImGui.Button($"Don't start new backup and let old backup finish"))
+        if(ImGui.Button($"不要启动新备份，等待旧备份完成"))
         {
             this.IsOpen = false;
         }
-        if(ImGui.Button($"(not recommended) Run new backup anyway"))
+        if(ImGui.Button($"（不推荐）仍然运行新备份"))
         {
             (ECommonsMain.Instance as JustBackup).DoBackupInternal();
             this.IsOpen = false;

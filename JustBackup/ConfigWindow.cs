@@ -22,46 +22,46 @@ internal class ConfigWindow : Window
         {
             ImGuiEx.WithTextColor(ImGuiColors.DalamudOrange, delegate
             {
-                if (ImGui.Button("Read how to restore a backup"))
+                if (ImGui.Button("如何还原你的设置"))
                 {
                     ShellStart("https://github.com/NightmareXIV/JustBackup/blob/master/README.md#restoring-a-backup");
                 }
             });
         });
-        ImGuiEx.Text(@"Custom backup path (by default: %localappdata%\JustBackup):");
+        ImGuiEx.Text(@"自定义备份路径 (默认: %localappdata%\JustBackup):");
         ImGui.SetNextItemWidth(400f);
         ImGui.InputText("##PathToBkp", ref p.config.BackupPath, 100);
-        ImGuiEx.Text(@"Custom temporary files path (by default: %temp%):");
+        ImGuiEx.Text(@"自定义临时文件路径 (默认: %temp%):");
         ImGui.SetNextItemWidth(400f);
         ImGui.InputText("##PathToTmp", ref p.config.TempPath, 100);
-        ImGui.Checkbox("Automatically remove old backups", ref p.config.DeleteBackups);
+        ImGui.Checkbox("自动移除旧的备份文件", ref p.config.DeleteBackups);
         if (p.config.DeleteBackups)
         {
             ImGui.SetNextItemWidth(50f);
-            ImGui.DragInt("Delete backups older than, days", ref p.config.DaysToKeep, 0.1f, 3, 730);
+            ImGui.DragInt("删除超过指定天数的备份", ref p.config.DaysToKeep, 0.1f, 3, 730);
             if (p.config.DaysToKeep < 3) p.config.DaysToKeep = 3;
             if (p.config.DaysToKeep > 730) p.config.DaysToKeep = 730;
-            ImGui.Checkbox("Delete to recycle bin, if available.", ref p.config.DeleteToRecycleBin);
+            ImGui.Checkbox("如果可以移动到回收站", ref p.config.DeleteToRecycleBin);
             ImGui.SetNextItemWidth(50f);
-            ImGui.DragInt("Always keep at least this number of backup regardless of their date", ref p.config.BackupsToKeep, 0.1f, 10, 100000);
+            ImGui.DragInt("保留指定份数的备份(忽略时间)", ref p.config.BackupsToKeep, 0.1f, 10, 100000);
             if (p.config.BackupsToKeep < 0) p.config.BackupsToKeep = 0;
             ImGui.Separator();
         }
-        ImGui.Checkbox("Include plugin configurations", ref p.config.BackupPluginConfigs);
-        ImGui.Checkbox("Include ALL files inside FFXIV's data folder into backup", ref p.config.BackupAll);
-        ImGuiEx.Text("  (otherwise only config files will be saved, screenshots, logs, etc will be skipped)");
-        ImGui.Checkbox($"Exclude replays from backup", ref p.config.ExcludeReplays);
-        ImGui.Checkbox("Use built-in zip method instead of 7-zip", ref p.config.UseDefaultZip);
-        if (p.config.UseDefaultZip) ImGuiEx.Text(ImGuiColors.DalamudRed, "7-zip archives are taking up to 15 times less space!");
-        ImGui.Checkbox("Do not restrict amount of resources 7-zip can use", ref p.config.NoThreadLimit);
+        ImGui.Checkbox("备份插件配置文件", ref p.config.BackupPluginConfigs);
+        ImGui.Checkbox("备份所有FFXIV数据文件夹中的文件", ref p.config.BackupAll);
+        ImGuiEx.Text("  (否则只会保存配置文件，截图、日志等将被跳过)");
+        ImGui.Checkbox($"不备份录像文件", ref p.config.ExcludeReplays);
+        ImGui.Checkbox("使用内部7ZIP方案", ref p.config.UseDefaultZip);
+        if (p.config.UseDefaultZip) ImGuiEx.Text(ImGuiColors.DalamudRed, "7-Zip 压缩的文件占用空间最多可减少 15 倍！");
+        ImGui.Checkbox("不限制 7-Zip 可使用的资源数量。", ref p.config.NoThreadLimit);
         ImGui.SetNextItemWidth(100f);
-        ImGui.SliderInt($"Minimal interval between backups, minutes", ref p.config.MinIntervalBetweenBackups, 0, 60);
-        ImGuiComponents.HelpMarker("Backup will not be created if previous backup was created less than this amount of minutes. Note that only successfully completed backups will update interval.");
+        ImGui.SliderInt($"备份之间的最小间隔 (分钟)", ref p.config.MinIntervalBetweenBackups, 0, 60);
+        ImGuiComponents.HelpMarker("如果上次备份创建时间少于此分钟数，则不会创建新的备份。请注意，只有成功完成的备份才会更新间隔。");
     }
 
     void Tools()
     {
-        if (ImGui.Button("Open backup folder"))
+        if (ImGui.Button("打开备份文件夹"))
         {
             ShellStart(p.GetBackupPath());
         }
@@ -72,35 +72,35 @@ internal class ConfigWindow : Window
                 ShellStart("https://github.com/NightmareXIV/JustBackup/blob/master/README.md#restoring-a-backup");
             }
         });
-        if (ImGui.Button("Open FFXIV configuration folder"))
+        if (ImGui.Button("打开FFXIV数据文件夹"))
         {
             ShellStart(p.GetFFXIVConfigFolder());
         }
-        if (ImGui.Button("Open plugins configuration folder"))
+        if (ImGui.Button("打开插件配置文件夹"))
         {
             ShellStart(JustBackup.GetPluginsConfigDir().FullName);
         }
         if (Svc.ClientState.LocalPlayer != null)
         {
-            if (ImGui.Button("Open current character's config directory"))
+            if (ImGui.Button("打开当前角色配置文件夹"))
             {
                 ShellStart(Path.Combine(p.GetFFXIVConfigFolder(), $"FFXIV_CHR{Svc.ClientState.LocalContentId:X16}"));
             }
-            if (ImGui.Button("Add identification info"))
+            if (ImGui.Button("添加识别信息"))
             {
                 Safe(() =>
                 {
                     var fname = Path.Combine(p.GetFFXIVConfigFolder(), $"FFXIV_CHR{Svc.ClientState.LocalContentId:X16}",
                         $"_{Player.NameWithWorld}.dat");
                     File.Create(fname).Dispose();
-                    Notify.Success("Added identification info for current character");
+                    Notify.Success("已为当前角色添加识别信息");
                 }, (e) =>
                 {
-                    Notify.Error("Error while adding identification info for current character:\n" + e);
+                    Notify.Error("添加当前角色的识别信息时出错:\n" + e);
                 });
             }
-            ImGuiEx.Tooltip("Adds an empty file into character's config directory\n" +
-                "containing character's name and home world");
+            ImGuiEx.Tooltip("将一个空文件添加到角色的配置目录中\n" +
+				"文件包含角色的名称和主世界");
         }
     }
 
@@ -128,29 +128,29 @@ internal class ConfigWindow : Window
         }
         ImGui.SameLine();
 
-        ImGui.InputText("Ignored (partial) Path", ref newIgnoredFile, 512);
+        ImGui.InputText("略过路径", ref newIgnoredFile, 512);
     }
 
     void Expert()
     {
-        ImGuiEx.Text($"Override game configuration folder path:");
+        ImGuiEx.Text($"覆盖游戏配置文件夹路径:");
         ImGuiEx.SetNextItemFullWidth();
         ImGui.InputText($"##pathGame", ref p.config.OverrideGamePath, 2000);
         ImGui.SetNextItemWidth(150f);
-        ImGui.InputInt("Maximum threads", ref p.config.MaxThreads.ValidateRange(1, 99), 1, 99);
+        ImGui.InputInt("最大线程", ref p.config.MaxThreads.ValidateRange(1, 99), 1, 99);
         ImGui.SetNextItemWidth(100f);
-        ImGui.SliderInt($"Throttle copying, ms", ref p.config.CopyThrottle.ValidateRange(0, 50), 0, 5);
-        ImGuiComponents.HelpMarker("The higher this value, the longer backup creation will take but the less loaded your SSD/HDD will be. Increase this value if you're experiencing lag during backup process.");
+        ImGui.SliderInt($"限制复制速度，单位为毫秒", ref p.config.CopyThrottle.ValidateRange(0, 50), 0, 5);
+        ImGuiComponents.HelpMarker("这个值越高，备份创建所需的时间越长，但你的 SSD/HDD 负载越低。如果在备份过程中遇到延迟，可以增大这个值.");
     }
 
     public override void Draw()
     {
         PatreonBanner.DrawRight();
         ImGuiEx.EzTabBar("default", PatreonBanner.Text,
-            ("Settings", Settings, null, true),
-            ("Tools", Tools, null, true),
-            ("Ignored pathes (beta)", Ignored, null, true),
-            ("Expert options", Expert, null, true),
+            ("设置", Settings, null, true),
+            ("工具", Tools, null, true),
+            ("忽略路径 (beta)", Ignored, null, true),
+            ("导出设置", Expert, null, true),
             InternalLog.ImGuiTab()
             );
                    
@@ -159,7 +159,7 @@ internal class ConfigWindow : Window
     public override void OnClose()
     {
         Svc.PluginInterface.SavePluginConfig(p.config);
-        Notify.Success("Configuration saved");
+        Notify.Success("配置已经保存");
         base.OnClose();
     }
 }
